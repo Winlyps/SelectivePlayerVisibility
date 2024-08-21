@@ -22,9 +22,10 @@ class PlayerVisibilityCommand(private val plugin: SelectivePlayerVisibility) : C
         when (action.toLowerCase()) {
             "hide" -> {
                 if (target.equals("all", ignoreCase = true)) {
+                    // Hide all players, including offline ones
+                    updateDatabaseForAllPlayers(sender, true)
                     Bukkit.getOnlinePlayers().forEach { player ->
                         sender.hidePlayer(plugin, player)
-                        updateDatabase(sender, player, true)
                     }
                 } else {
                     val player = Bukkit.getPlayer(target)
@@ -36,9 +37,10 @@ class PlayerVisibilityCommand(private val plugin: SelectivePlayerVisibility) : C
             }
             "show" -> {
                 if (target.equals("all", ignoreCase = true)) {
+                    // Show all players, including offline ones
+                    updateDatabaseForAllPlayers(sender, false)
                     Bukkit.getOnlinePlayers().forEach { player ->
                         sender.showPlayer(plugin, player)
-                        updateDatabase(sender, player, false)
                     }
                 } else {
                     val player = Bukkit.getPlayer(target)
@@ -51,6 +53,15 @@ class PlayerVisibilityCommand(private val plugin: SelectivePlayerVisibility) : C
             else -> return false
         }
         return true
+    }
+
+    private fun updateDatabaseForAllPlayers(player: Player, hide: Boolean) {
+        val query = "INSERT OR REPLACE INTO player_visibility (player_uuid, hidden_players) VALUES (?, ?)"
+        val statement = plugin.dbConnection?.prepareStatement(query)
+        statement?.setString(1, player.uniqueId.toString())
+        statement?.setString(2, if (hide) "all" else "")
+        statement?.executeUpdate()
+        statement?.close()
     }
 
     private fun updateDatabase(player: Player, target: Player, hide: Boolean) {

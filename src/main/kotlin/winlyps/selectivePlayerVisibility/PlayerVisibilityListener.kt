@@ -35,10 +35,14 @@ class PlayerVisibilityListener(private val plugin: SelectivePlayerVisibility) : 
             val onlinePlayer = plugin.server.getPlayer(java.util.UUID.fromString(playerUuid))
 
             if (onlinePlayer != null) {
-                hiddenPlayers.split(",").forEach { uuid ->
-                    val hiddenPlayer = plugin.server.getPlayer(java.util.UUID.fromString(uuid))
-                    if (hiddenPlayer != null) {
-                        onlinePlayer.hidePlayer(plugin, hiddenPlayer)
+                if (hiddenPlayers == "all") {
+                    plugin.server.onlinePlayers.forEach { onlinePlayer.hidePlayer(plugin, it) }
+                } else {
+                    hiddenPlayers.split(",").forEach { uuid ->
+                        val hiddenPlayer = plugin.server.getPlayer(java.util.UUID.fromString(uuid))
+                        if (hiddenPlayer != null) {
+                            onlinePlayer.hidePlayer(plugin, hiddenPlayer)
+                        }
                     }
                 }
             }
@@ -55,10 +59,14 @@ class PlayerVisibilityListener(private val plugin: SelectivePlayerVisibility) : 
 
         if (resultSet?.next() == true) {
             val hiddenPlayers = resultSet.getString("hidden_players")
-            hiddenPlayers.split(",").forEach { uuid ->
-                val hiddenPlayer = plugin.server.getPlayer(java.util.UUID.fromString(uuid))
-                if (hiddenPlayer != null) {
-                    player.hidePlayer(plugin, hiddenPlayer)
+            if (hiddenPlayers == "all") {
+                plugin.server.onlinePlayers.forEach { player.hidePlayer(plugin, it) }
+            } else {
+                hiddenPlayers.split(",").forEach { uuid ->
+                    val hiddenPlayer = plugin.server.getPlayer(java.util.UUID.fromString(uuid))
+                    if (hiddenPlayer != null) {
+                        player.hidePlayer(plugin, hiddenPlayer)
+                    }
                 }
             }
         }
