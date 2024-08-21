@@ -1,0 +1,9 @@
+name: SelectivePlayerVisibility
+version: '1.0-SNAPSHOT'
+main: winlyps.selectivePlayerVisibility.SelectivePlayerVisibility
+api-version: '1.20'
+authors: [ Winlyps ]
+commands:
+  playervisibility:
+    description: Control player visibility
+    usage: /playervisibility <hide/show> <all/OnlinePlayersNicknames>
