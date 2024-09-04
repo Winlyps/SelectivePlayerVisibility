@@ -7,3 +7,9 @@ commands:
   playervisibility:
     description: Control player visibility
     usage: /playervisibility <hide/show> <all/OnlinePlayersNicknames>
+    permission: selectiveplayervisibility.command
+    permission-message: You do not have permission to use this command.
+permissions:
+  selectiveplayervisibility.command:
+    description: Allows usage of the playervisibility command
+    default: op
